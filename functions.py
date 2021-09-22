@@ -81,3 +81,12 @@ def fade(width, height):
         SCREEN.blit(fade, (0,0))
         pygame.display.update(1)
         
+        
+
+def check_win(board):
+    win = False
+    flat = [x for row in board for x in row]
+    if all([flat.count(i) == 6 for i in range(1,12)]):
+        win = True
+  
+    return win

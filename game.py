@@ -6,31 +6,49 @@ from constants import *
 from board import MainBoard, MemoryBoard, WarningBoard
 from shapes import Shape
 from mouse import Mouse
-from functions import shape_in_board, nearby, fade
+from functions import shape_in_board, nearby, check_win, draw_text_middle
 from buttons import Button
+from animation import Coordinates, animation_path
 
 numbers = ['zero', 'one', 'two', 'three', 'four',
            'five', 'six', 'seven', 'eight', 'nine']
-scale = (50, 60)
+digit_size = (50, 60)
 clock = pygame.time.Clock()
+
 
 def game(lvl):
     pygame.init()
-    
+
+    # Time
     milsec = 0
     second = 0
     minute = 0
     hour = 0
 
-    tens = [pygame.transform.scale(image_const(num), scale)
+    tens = [pygame.transform.scale(image_const(num), digit_size)
             for num in numbers[0:6]]
     singles = [pygame.transform.scale(
-        image_const(num), scale) for num in numbers]
-    colon = pygame.transform.scale(image_const('colon'), scale)
+        image_const(num), digit_size) for num in numbers]
+    colon = pygame.transform.scale(image_const('colon'), digit_size)
 
+    # Buttons
+    submit = Button((levels[lvl][2]*2 + CELL_SIZE*levels[lvl][0])/2 - 95,
+                    levels[lvl][3]+CELL_SIZE*levels[lvl][1],
+                    image_const('submit'),
+                    0.7)
+    submit_hovered = Button((levels[lvl][2]*2 + CELL_SIZE*levels[lvl][0])/2 - 95,
+                            levels[lvl][3]+CELL_SIZE*levels[lvl][1],
+                            image_const('submit_hovered'),
+                            0.7)
     home = Button(30, 750, image_const('home'), 0.3)
 
-    # width, height, left, top
+    undone = Button(S_WIDTH/2, S_HEIGHT*1/3, image_const('undone'), 0.5)
+    complete = Button(S_WIDTH/2, S_HEIGHT*1/3, image_const('complete'), 0.5)
+    nextlevel = Button(S_WIDTH*3/8, S_HEIGHT/2, image_const('nextlevel'), 0.5)
+    menu = Button(S_WIDTH*5/8, S_HEIGHT/2, image_const('menu'), 0.5)
+    continue_ = Button(S_WIDTH/2, S_HEIGHT*1/2, image_const('continue'), 0.5)
+
+    # Board //levels = [width, height, left, top]
     main_board = MainBoard(
         levels[lvl][0], levels[lvl][1], levels[lvl][2], levels[lvl][3], WHITE, BLACK, 1)
     memo_board = MemoryBoard(
@@ -41,6 +59,13 @@ def game(lvl):
     shapes = [Shape(5, 5, shape_pos[i][0], shape_pos[i][1],
                     COLORS[random.randint(0, len(COLORS)-1)], BLACK, 1) for i in range(11)]
 
+    # Animation //Coordinates(CenterX, CenterY, width, height)
+    board_coord = Coordinates(levels[lvl][2] + 1/2*levels[lvl][0]*CELL_SIZE,
+                              levels[lvl][3] + 1/2*levels[lvl][1]*CELL_SIZE,
+                              levels[lvl][0] * CELL_SIZE,
+                              levels[lvl][1] * CELL_SIZE).rectangle()
+    board_animation = animation_path(board_coord, 50)
+
     pressed = None
     is_running = True
 
@@ -48,13 +73,65 @@ def game(lvl):
     Mouse(mouse)
 
     while is_running:
+
+        SCREEN.fill(WHITE)
+        
+        # Bottons     
+        submit.draw(SCREEN)
+        home.draw(SCREEN)
+        # Game elements
+        main_board.render()
+        warning_board.render()
+        # Outline for main_board
+        pygame.draw.rect(
+            SCREEN, BLACK,
+            (levels[lvl][2], levels[lvl][3], CELL_SIZE*levels[lvl][0], CELL_SIZE*levels[lvl][1]), 5)
+        # Shapes
+        for shape in shapes:
+            shape.render()
+
+
         if home.is_clicked():
             is_running = False
 
+
+        if submit.hovered():
+            submit_hovered.draw(SCREEN)
+            if submit_hovered.is_clicked():
+                for pos in board_animation:
+                    for cell in pos:
+                        pygame.draw.rect(SCREEN, (255, 255, 0), pygame.Rect(
+                            cell[0]-3, cell[1]-3, 6, 6), 0)
+                    pygame.display.update()
+                    result = check_win(memo_board.board)
+                    
+                while True:
+                    pygame.draw.rect(SCREEN, GREY, (0, 0, S_WIDTH, S_HEIGHT), 0)
+                    
+                    if result is True:
+                        complete.draw_centered(SCREEN)
+                        nextlevel.draw_centered(SCREEN)
+                        menu.draw_centered(SCREEN)
+                        if nextlevel.is_clicked():
+                            game(lvl+1)
+                        if menu.is_clicked():
+                            is_running = False
+                            break
+                    else:
+                        print('nottrue')
+                        undone.draw_centered(SCREEN)
+                        continue_.draw_centered(SCREEN)
+                        if continue_.is_clicked():
+                            print('clicked')
+                            break
+
+                    pygame.display.update()
+                    
+
+        # Game
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                
 
             for i, shape in enumerate(shapes):
                 shape.create_shape(i)
@@ -73,6 +150,7 @@ def game(lvl):
                                     for c in range(len(memo_board.board[r])):
                                         if memo_board.board[r][c] == i+1:
                                             memo_board.board[r][c] = 0
+
                     if event.button == 3:
                         pressed = None
                         warning_board.reset()
@@ -120,21 +198,19 @@ def game(lvl):
             second = second+1
         if second == 60:
             second = 0
-            minute=minute+1
+            minute = minute+1
         if minute == 60:
             minute = 0
             second = 0
-            hour=hour+1
-        if hour==24:
-            hour=0
+            hour = hour+1
+        if hour == 24:
+            hour = 0
             second = 0
-            minute=0
+            minute = 0
 
-        SCREEN.fill(WHITE)
         # Time
-
         time_left = (levels[lvl][2]*2 + CELL_SIZE*levels[lvl][0])/2 - 100
-        
+
         SCREEN.blit(tens[hour//10], (time_left, levels[lvl][3]-60))
         SCREEN.blit(singles[hour % 10], (time_left+20, levels[lvl][3]-60))
 
@@ -145,19 +221,6 @@ def game(lvl):
         SCREEN.blit(colon, (time_left+100, levels[lvl][3]-60))
         SCREEN.blit(tens[second//10], (time_left+120, levels[lvl][3]-60))
         SCREEN.blit(singles[second % 10], (time_left+140, levels[lvl][3]-60))
-
-        # Bottonss
-        home.draw(SCREEN)
-
-        # Game elements
-        main_board.render()
-        warning_board.render()
-        # outline for main_board
-        pygame.draw.rect(
-            SCREEN, BLACK,
-            (levels[lvl][2], levels[lvl][3], CELL_SIZE*levels[lvl][0], CELL_SIZE*levels[lvl][1]), 5)
-        for shape in shapes:
-            shape.render()
 
         clock.tick(FPS)
 

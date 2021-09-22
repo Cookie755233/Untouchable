@@ -30,13 +30,11 @@ PINK = (255, 192, 203)
 COLORS = [PURPLE, TEAL, LIME, GREEN, OLIVE, ORANGE,
           PINK, MAROON, BLUE, AQUA, GREY]
 
-''' 
-intro, untouchable, qmark, rules
-level_one, level_one_hovered ...
 
-'''
 def image_const(name):
     return pygame.image.load(os.path.join('./Assets', f'{name}.png')).convert_alpha()
+
+
 
 default_shapes = [[1, 2, 5, 6, 11, 16],
                   [1, 6, 10, 11, 12, 16],
