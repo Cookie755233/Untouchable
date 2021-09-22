@@ -90,10 +90,13 @@ def game(lvl):
         for shape in shapes:
             shape.render()
 
+        complete.draw_centered(SCREEN)
 
         if home.is_clicked():
             is_running = False
 
+        if complete.hovered_centered:
+            print('yes')
 
         if submit.hovered():
             submit_hovered.draw(SCREEN)
@@ -105,27 +108,27 @@ def game(lvl):
                     pygame.display.update()
                     result = check_win(memo_board.board)
                     
-                while True:
-                    pygame.draw.rect(SCREEN, GREY, (0, 0, S_WIDTH, S_HEIGHT), 0)
+                # while True:
+                #     pygame.draw.rect(SCREEN, GREY, (0, 0, S_WIDTH, S_HEIGHT), 0)
                     
-                    if result is True:
-                        complete.draw_centered(SCREEN)
-                        nextlevel.draw_centered(SCREEN)
-                        menu.draw_centered(SCREEN)
-                        if nextlevel.is_clicked():
-                            game(lvl+1)
-                        if menu.is_clicked():
-                            is_running = False
-                            break
-                    else:
-                        print('nottrue')
-                        undone.draw_centered(SCREEN)
-                        continue_.draw_centered(SCREEN)
-                        if continue_.is_clicked():
-                            print('clicked')
-                            break
+                #     if result is True:
+                #         complete.draw_centered(SCREEN)
+                #         nextlevel.draw_centered(SCREEN)
+                #         menu.draw_centered(SCREEN)
+                #         if nextlevel.is_clicked():
+                #             game(lvl+1)
+                #         if menu.is_clicked():
+                #             is_running = False
+                #             break
+                #     else:
+                #         print('nottrue')
+                #         undone.draw_centered(SCREEN)
+                #         continue_.draw_centered(SCREEN)
+                #         if continue_.is_clicked():
+                #             print('clicked')
+                #             break
 
-                    pygame.display.update()
+                #     pygame.display.update()
                     
 
         # Game
