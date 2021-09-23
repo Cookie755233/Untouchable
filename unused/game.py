@@ -1,35 +1,35 @@
 
 import random
 import pygame
-import time
 from constants import *
 from board import MainBoard, MemoryBoard, WarningBoard
 from shapes import Shape
 from mouse import Mouse
-from functions import shape_in_board, nearby, check_win, draw_text_middle
+from functions import shape_in_board, nearby, check_win
 from buttons import Button
 from animation import Coordinates, animation_path
+from cutscene import continues, win
 
-numbers = ['zero', 'one', 'two', 'three', 'four',
-           'five', 'six', 'seven', 'eight', 'nine']
-digit_size = (50, 60)
-clock = pygame.time.Clock()
 
+''' Merged onto stage class, this file is no longer needed '''
 
 def game(lvl):
     pygame.init()
+    clock = pygame.time.Clock()
 
     # Time
     milsec = 0
     second = 0
     minute = 0
     hour = 0
+    numbers = ['zero', 'one', 'two', 'three', 'four',
+               'five', 'six', 'seven', 'eight', 'nine']
 
-    tens = [pygame.transform.scale(image_const(num), digit_size)
+    tens = [pygame.transform.scale(image_const(num), (50, 60))
             for num in numbers[0:6]]
     singles = [pygame.transform.scale(
-        image_const(num), digit_size) for num in numbers]
-    colon = pygame.transform.scale(image_const('colon'), digit_size)
+        image_const(num), (50, 60)) for num in numbers]
+    colon = pygame.transform.scale(image_const('colon'), (50, 60))
 
     # Buttons
     submit = Button((levels[lvl][2]*2 + CELL_SIZE*levels[lvl][0])/2 - 95,
@@ -41,12 +41,6 @@ def game(lvl):
                             image_const('submit_hovered'),
                             0.7)
     home = Button(30, 750, image_const('home'), 0.3)
-
-    undone = Button(S_WIDTH/2, S_HEIGHT*1/3, image_const('undone'), 0.5)
-    complete = Button(S_WIDTH/2, S_HEIGHT*1/3, image_const('complete'), 0.5)
-    nextlevel = Button(S_WIDTH*3/8, S_HEIGHT/2, image_const('nextlevel'), 0.5)
-    menu = Button(S_WIDTH*5/8, S_HEIGHT/2, image_const('menu'), 0.5)
-    continue_ = Button(S_WIDTH/2, S_HEIGHT*1/2, image_const('continue'), 0.5)
 
     # Board //levels = [width, height, left, top]
     main_board = MainBoard(
@@ -75,8 +69,8 @@ def game(lvl):
     while is_running:
 
         SCREEN.fill(WHITE)
-        
-        # Bottons     
+
+        # Bottons
         submit.draw(SCREEN)
         home.draw(SCREEN)
         # Game elements
@@ -90,13 +84,23 @@ def game(lvl):
         for shape in shapes:
             shape.render()
 
-        complete.draw_centered(SCREEN)
+        # Time
+        time_left = (levels[lvl][2]*2 + CELL_SIZE*levels[lvl][0])/2 - 100
 
+        SCREEN.blit(tens[hour//10], (time_left, levels[lvl][3]-60))
+        SCREEN.blit(singles[hour % 10], (time_left+20, levels[lvl][3]-60))
+
+        SCREEN.blit(colon, (time_left+40, levels[lvl][3]-60))
+        SCREEN.blit(tens[minute//10], (time_left+60, levels[lvl][3]-60))
+        SCREEN.blit(singles[minute % 10], (time_left+80, levels[lvl][3]-60))
+
+        SCREEN.blit(colon, (time_left+100, levels[lvl][3]-60))
+        SCREEN.blit(tens[second//10], (time_left+120, levels[lvl][3]-60))
+        SCREEN.blit(singles[second % 10], (time_left+140, levels[lvl][3]-60))
+
+        # Game
         if home.is_clicked():
             is_running = False
-
-        if complete.hovered_centered:
-            print('yes')
 
         if submit.hovered():
             submit_hovered.draw(SCREEN)
@@ -106,32 +110,18 @@ def game(lvl):
                         pygame.draw.rect(SCREEN, (255, 255, 0), pygame.Rect(
                             cell[0]-3, cell[1]-3, 6, 6), 0)
                     pygame.display.update()
-                    result = check_win(memo_board.board)
-                    
-                # while True:
-                #     pygame.draw.rect(SCREEN, GREY, (0, 0, S_WIDTH, S_HEIGHT), 0)
-                    
-                #     if result is True:
-                #         complete.draw_centered(SCREEN)
-                #         nextlevel.draw_centered(SCREEN)
-                #         menu.draw_centered(SCREEN)
-                #         if nextlevel.is_clicked():
-                #             game(lvl+1)
-                #         if menu.is_clicked():
-                #             is_running = False
-                #             break
-                #     else:
-                #         print('nottrue')
-                #         undone.draw_centered(SCREEN)
-                #         continue_.draw_centered(SCREEN)
-                #         if continue_.is_clicked():
-                #             print('clicked')
-                #             break
+                    complete = check_win(memo_board.board)
+                if not complete:
+                    continues()
 
-                #     pygame.display.update()
-                    
+                else: # Still broken here
+                    win()
+                    if win() is True:
+                        is_running = False
+                        game(lvl+1)
+                    else:
+                        is_running = False
 
-        # Game
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -211,22 +201,7 @@ def game(lvl):
             second = 0
             minute = 0
 
-        # Time
-        time_left = (levels[lvl][2]*2 + CELL_SIZE*levels[lvl][0])/2 - 100
-
-        SCREEN.blit(tens[hour//10], (time_left, levels[lvl][3]-60))
-        SCREEN.blit(singles[hour % 10], (time_left+20, levels[lvl][3]-60))
-
-        SCREEN.blit(colon, (time_left+40, levels[lvl][3]-60))
-        SCREEN.blit(tens[minute//10], (time_left+60, levels[lvl][3]-60))
-        SCREEN.blit(singles[minute % 10], (time_left+80, levels[lvl][3]-60))
-
-        SCREEN.blit(colon, (time_left+100, levels[lvl][3]-60))
-        SCREEN.blit(tens[second//10], (time_left+120, levels[lvl][3]-60))
-        SCREEN.blit(singles[second % 10], (time_left+140, levels[lvl][3]-60))
-
         clock.tick(FPS)
 
         mouse.update()
-
-        pygame.display.flip()
+        pygame.display.update()

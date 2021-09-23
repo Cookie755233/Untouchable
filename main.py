@@ -1,6 +1,6 @@
-
-from menu import main_menu
-
+from stage import GameState
 
 if __name__ == '__main__':
-    main_menu()
+    while True:
+        game = GameState()
+        game.stage_manager()

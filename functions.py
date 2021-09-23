@@ -29,40 +29,43 @@ def shape_in_board(board, shape_abs_pos, figure) -> tuple[bool, list[list]]:
 
     return is_in, overlapped_cell
 
+
 def nearby(board):
-    cashe = set([num for inner_list in [list(row) for row in board] for num in inner_list])
+    cashe = set([num for inner_list in [list(row)
+                for row in board] for num in inner_list])
     paint_locs = []
     cashe.remove(0)
     for num in cashe:
         for r in range(len(board)):
             for c in range(len(board[r])):
                 direction = [(r - 1, c), (r, c - 1), (r + 1, c), (r, c + 1),
-                                (r-1, c-1), (r-1, c+1), (r-1, c+1), (r+1, c+1)]
+                             (r-1, c-1), (r-1, c+1), (r-1, c+1), (r+1, c+1)]
                 if board[r][c] == num:
                     for row, col in direction:
                         if row >= 0 and col >= 0 and row < len(board) and col < len(board[row]):
                             if board[row][col] in cashe and board[row][col] != num:
                                 paint_locs.append([r, c])
 
-    return list(set(tuple(loc) for loc in paint_locs)) # location of nearby cells
+    # location of nearby cells
+    return list(set(tuple(loc) for loc in paint_locs))
 
 
-def clean_up(board, num=None):
-    def dfs(board, r, c):
-        position = [(r - 1, c), (r, c - 1), (r + 1, c), (r, c + 1)]
-        for row, col in position:
-            if row >= 0 and col >= 0 and row < len(board) and col < len(board[row]):
-                if 2 < board[row][col] < 6:
-                    board[row][col] = 0
+# def clean_up(board, num=None):
+#     def dfs(board, r, c):
+#         position = [(r - 1, c), (r, c - 1), (r + 1, c), (r, c + 1)]
+#         for row, col in position:
+#             if row >= 0 and col >= 0 and row < len(board) and col < len(board[row]):
+#                 if 2 < board[row][col] < 6:
+#                     board[row][col] = 0
 
-    for r in range(len(board)):
-        for c in range(len(board[r])):
-            if num != None:
-                if board[r][c] == num + 5:
-                    dfs(board, r, c)
-                    board[r][c] = 0
-            if board[r][c] < 3:
-                board[r][c] = 0
+#     for r in range(len(board)):
+#         for c in range(len(board[r])):
+#             if num != None:
+#                 if board[r][c] == num + 5:
+#                     dfs(board, r, c)
+#                     board[r][c] = 0
+#             if board[r][c] < 3:
+#                 board[r][c] = 0
 
 
 def draw_text_middle(surface, text, size, color, fontname):
@@ -70,7 +73,8 @@ def draw_text_middle(surface, text, size, color, fontname):
     font = pygame.font.SysFont(fontname, size)
     label = font.render(text, 1, color)
 
-    surface.blit(label, (S_WIDTH/2 - (label.get_width()/2), S_HEIGHT/2 - label.get_height()/2))
+    surface.blit(label, (S_WIDTH/2 - (label.get_width()/2),
+                 S_HEIGHT/2 - label.get_height()/2))
 
 
 def fade(width, height):
@@ -78,15 +82,29 @@ def fade(width, height):
     fade.fill(WHITE)
     for alpha in range(0, 300):
         fade.set_alpha(alpha)
-        SCREEN.blit(fade, (0,0))
+        SCREEN.blit(fade, (0, 0))
         pygame.display.update(1)
-        
-        
+
 
 def check_win(board):
     win = False
-    flat = [x for row in board for x in row]
-    if all([flat.count(i) == 6 for i in range(1,12)]):
+    no_nearby = True 
+    
+    # Check nearby
+    for i in range(1, 12):
+        for r in range(len(board)):
+            for c in range(len(board[r])):
+                direction = [(r - 1, c), (r, c - 1), (r + 1, c), (r, c + 1),
+                             (r-1, c-1), (r-1, c+1), (r-1, c+1), (r+1, c+1)]
+                if board[r][c] == i:
+                    for row, col in direction:
+                        if row >= 0 and col >= 0 and row < len(board) and col < len(board[row]):
+                            if board[row][col] != i or board[row][col] != 0 :
+                                no_nearby = False
+
+    # Check if pieces out of board
+    flattend_board = [x for row in board for x in row]
+    if all([flattend_board.count(i) == 6 for i in range(1, 12)]) and no_nearby:
         win = True
-  
+
     return win

@@ -7,28 +7,8 @@ from buttons import Button
 from functions import fade
 import time
 
-# x, y, IMAGE_PATH, scale
-game_image = Button(375, 30, image_const('intro'), 0.8)
-untouchable = Button(260, 320, image_const('untouchable'), 1)
-description = Button(150, 100, image_const('description'), 0.75)
 
-qmark = Button(1100, 30, image_const('qmark'), 0.5)
-qmark_hovered = Button(1100, 30, image_const('qmark_hovered'), 0.5)
-
-level_one = Button(100, 500, image_const('level_one'), 0.7)
-level_one_hovered = Button(100, 500, image_const('level_one_hovered'), 0.7)
-
-level_two = Button(470, 500, image_const('level_two'), 0.7)
-level_two_hovered = Button(470, 500, image_const('level_two_hovered'), 0.7)
-
-level_three = Button(840, 500, image_const('level_three'), 0.7)
-level_three_hovered = Button(840, 500, image_const('level_three_hovered'), 0.7)
-
-# level_x = [100, 470, 840]
-# level_names = ['level_one', 'level_two', 'level_three']
-# level_names = ['level_one_hovered', 'level_two_hovered', 'level_three_hovered']
-# levels = [Botton(x, 500, image_const(name), 0.7) for x in level_x for name in level_names]
-# levels_hovered = [Botton(x, 500, image_const(name), 0.7) for x in level_x for name in level_names]
+''' Merged onto stage class, this file is no longer needed '''
 
 
 pygame.init()
@@ -36,6 +16,24 @@ pygame.display.set_caption('Never Gonna Give You Up')
 
 
 def main_menu():
+
+    # x, y, IMAGE_PATH, scale
+    game_image = Button(375, 30, image_const('intro'), 0.8)
+    untouchable = Button(260, 320, image_const('untouchable'), 1)
+    description = Button(150, 100, image_const('description'), 0.75)
+
+    qmark = Button(1100, 30, image_const('qmark'), 0.5)
+    qmark_hovered = Button(1100, 30, image_const('qmark_hovered'), 0.5)
+
+    level_one = Button(100, 500, image_const('level_one'), 0.7)
+    level_one_hovered = Button(100, 500, image_const('level_one_hovered'), 0.7)
+
+    level_two = Button(470, 500, image_const('level_two'), 0.7)
+    level_two_hovered = Button(470, 500, image_const('level_two_hovered'), 0.7)
+
+    level_three = Button(840, 500, image_const('level_three'), 0.7)
+    level_three_hovered = Button(840, 500, image_const('level_three_hovered'), 0.7)
+    
     while True:
 
         SCREEN.fill(WHITE)
