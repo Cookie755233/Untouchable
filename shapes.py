@@ -1,7 +1,5 @@
 
 from constants import *
-import pprint as pp
-
 
 class Shape:
     def __init__(self, width, height, left, top, inner_color, outer_color, lines, rotation=0):

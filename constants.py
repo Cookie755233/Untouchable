@@ -35,7 +35,6 @@ def image_const(name):
     return pygame.image.load(os.path.join('./Assets', f'{name}.png')).convert_alpha()
 
 
-
 default_shapes = [[1, 2, 5, 6, 11, 16],
                   [1, 6, 10, 11, 12, 16],
                   [1, 2, 3, 7, 12, 17],

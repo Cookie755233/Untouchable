@@ -88,8 +88,8 @@ def fade(width, height):
 
 def check_win(board):
     win = False
-    no_nearby = True 
-    
+    no_nearby = True
+
     # Check nearby
     for i in range(1, 12):
         for r in range(len(board)):
@@ -99,7 +99,7 @@ def check_win(board):
                 if board[r][c] == i:
                     for row, col in direction:
                         if row >= 0 and col >= 0 and row < len(board) and col < len(board[row]):
-                            if board[row][col] != i or board[row][col] != 0 :
+                            if board[row][col] != i or board[row][col] != 0:
                                 no_nearby = False
 
     # Check if pieces out of board

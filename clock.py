@@ -1,6 +1,10 @@
 import sys, pygame, random, time
 from constants import WHITE, image_const
 
+
+'''
+This is a small clock demo
+'''
 pygame.init()
 
 size = width, height = 300, 200

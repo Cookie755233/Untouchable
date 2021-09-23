@@ -133,7 +133,7 @@ class GameState():
                                   levels[self.lvl][1]*CELL_SIZE,
                                   levels[self.lvl][0] * CELL_SIZE,
                                   levels[self.lvl][1] * CELL_SIZE).rectangle()
-        board_animation = animation_path(board_coord, 50)
+        board_animation = animation_path(board_coord, 50)   
 
         pressed = None
 
@@ -191,7 +191,7 @@ class GameState():
                             pygame.draw.rect(SCREEN, (255, 255, 0), pygame.Rect(
                                 cell[0]-3, cell[1]-3, 6, 6), 0)
                         pygame.display.update()
-                        complete = check_win(memo_board.board)
+                    complete = check_win(memo_board.board)
 
                     if not complete:
                         continues()
