@@ -10,7 +10,4 @@ class Mouse(pygame.sprite.Sprite):
 
     def update(self): 
         # No idea why this error exists - pygame.error: video system not initialized
-        try:
-            self.rect = pygame.Rect(pygame.mouse.get_pos(), (1, 1))
-        except pygame.error:
-            pass
+        self.rect = pygame.Rect(pygame.mouse.get_pos(), (1, 1))

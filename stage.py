@@ -1,4 +1,4 @@
-
+import pprint as pp
 import pygame
 import random
 import time
@@ -199,6 +199,7 @@ class GameState():
                         win()
                         if win() is True:
                             self.lvl += 1
+                            self.stage_manager()
                             if self.lvl > 2:
                                 self.state = 'main_menu'
                                 self.stage_manager()
@@ -254,10 +255,8 @@ class GameState():
                                 if all(shape_overlapped):
                                     for cell in cells_on_board:
                                         if memo_board.board[cell[1]][cell[0]] == 0:
-                                            memo_board.board[cell[1]
-                                                             ][cell[0]] = i+1
-                                        new_pos = memo_board.get_shape(
-                                            event.pos, pos)
+                                            memo_board.board[cell[1]][cell[0]] = i+1
+                                        new_pos = memo_board.get_shape(event.pos, pos)
                                         shape.update(memo_board.left + new_pos[0]*CELL_SIZE,
                                                      memo_board.top + new_pos[1]*CELL_SIZE)
                                     pressed = None
