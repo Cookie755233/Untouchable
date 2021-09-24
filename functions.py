@@ -80,11 +80,10 @@ def draw_text_middle(surface, text, size, color, fontname):
 def fade(width, height):
     fade = pygame.Surface((width, height))
     fade.fill(WHITE)
-    for alpha in range(0, 300):
+    for alpha in range(0, 100):
         fade.set_alpha(alpha)
         SCREEN.blit(fade, (0, 0))
-        pygame.display.update(1)
-
+        pygame.display.update()
 
 def check_win(board):
     win = False

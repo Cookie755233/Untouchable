@@ -10,7 +10,7 @@ def continues():
     continue_ = Button(S_WIDTH/2, S_HEIGHT*1/2, image_const('continue'), 0.5)
         
     while running:
-        SCREEN.fill(GREY)
+        SCREEN.fill(WHITE)
         undone.draw_centered(SCREEN)
         continue_.draw_centered(SCREEN)
 
@@ -31,7 +31,7 @@ def win():
     menu = Button(S_WIDTH*5/8, S_HEIGHT/2, image_const('menu'), 0.5)
 
     while running:
-        SCREEN.fill(GREY)
+        SCREEN.fill(WHITE)
 
         complete.draw_centered(SCREEN)
         nextlevel.draw_centered(SCREEN)

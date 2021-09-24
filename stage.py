@@ -61,6 +61,7 @@ class GameState():
                     time.sleep(.3)
                     self.lvl = 0
                     self.state = 'main_game'
+                    fade(S_WIDTH, S_HEIGHT)
                     self.stage_manager()
 
             if level_two.hovered():
@@ -68,6 +69,7 @@ class GameState():
                 if level_two_hovered.is_clicked():
                     self.lvl = 1
                     self.state = 'main_game'
+                    fade(S_WIDTH, S_HEIGHT)
                     self.stage_manager()
 
             if level_three.hovered():
@@ -75,6 +77,7 @@ class GameState():
                 if level_three_hovered.is_clicked():
                     self.lvl = 2
                     self.state = 'main_game'
+                    fade(S_WIDTH, S_HEIGHT)
                     self.stage_manager()
 
             if qmark.hovered():
@@ -90,7 +93,7 @@ class GameState():
             pygame.display.update()
 
     def main_game(self):
-        # Time
+        # Time ---------------------------------------------------------- #
         milsec = 0
         second = 0
         minute = 0
@@ -104,7 +107,7 @@ class GameState():
             image_const(num), (50, 60)) for num in numbers]
         colon = pygame.transform.scale(image_const('colon'), (50, 60))
 
-        # Buttons
+        # Buttons ------------------------------------------------------- #
         submit = Button((levels[self.lvl][2]*2 + CELL_SIZE*levels[self.lvl][0])/2 - 95,
                         levels[self.lvl][3]+CELL_SIZE*levels[self.lvl][1],
                         image_const('submit'),
@@ -115,8 +118,12 @@ class GameState():
                                 image_const('submit_hovered'),
                                 0.7)
         home = Button(30, 750, image_const('home'), 0.3)
+        home_hovered = Button(30, 750, image_const('home_hovered'), 0.3)
+        reset = Button(70, 750, image_const('reset'), 0.3)
+        reset_hovered = Button(70, 750, image_const('reset_hovered'), 0.3)
+        
 
-        # Board //levels = [width, height, left, top]
+        # Board //levels = [width, height, left, top] ------------------- #
         main_board = MainBoard(
             levels[self.lvl][0], levels[self.lvl][1], levels[self.lvl][2], levels[self.lvl][3], WHITE, BLACK, 1)
         memo_board = MemoryBoard(
@@ -127,7 +134,7 @@ class GameState():
         shapes = [Shape(5, 5, shape_pos[i][0], shape_pos[i][1],
                         COLORS[random.randint(0, len(COLORS)-1)], BLACK, 1) for i in range(11)]
 
-        # Animation //Coordinates(CenterX, CenterY, width, height)
+        # Animation //Coordinates(CenterX, CenterY, width, height) ------- #
         board_coord = Coordinates(levels[self.lvl][2] + 1/2*levels[self.lvl][0]*CELL_SIZE,
                                   levels[self.lvl][3] + 1/2 *
                                   levels[self.lvl][1]*CELL_SIZE,
@@ -143,21 +150,22 @@ class GameState():
         while True:
             SCREEN.fill(WHITE)
 
-            # Bottons
+            # Game elements ---------------------------------------------- #
             submit.draw(SCREEN)
             home.draw(SCREEN)
-            # Game elements
+            reset.draw(SCREEN)
+            # Board  
             main_board.render()
             warning_board.render()
-            # Outline for main_board
+            # Outline 
             pygame.draw.rect(
                 SCREEN, BLACK,
                 (levels[self.lvl][2], levels[self.lvl][3], CELL_SIZE*levels[self.lvl][0], CELL_SIZE*levels[self.lvl][1]), 5)
-            # Shapes
+            # Shapes 
             for shape in shapes:
                 shape.render()
 
-            # Time
+            # Time 
             time_left = (levels[self.lvl][2]*2 +
                          CELL_SIZE*levels[self.lvl][0])/2 - 100
 
@@ -177,10 +185,22 @@ class GameState():
             SCREEN.blit(singles[second % 10],
                         (time_left+140, levels[self.lvl][3]-60))
 
-            # Game
-            if home.is_clicked():
-                self.state = 'main_menu'
-                self.stage_manager()
+            # Game -------------------------------------------------------- #
+            if home.hovered():
+                home_hovered.draw(SCREEN)
+                if home_hovered.is_clicked():
+                    self.state = 'main_menu'
+                    fade(S_WIDTH, S_HEIGHT)
+                    self.stage_manager()
+                
+            if reset.hovered():
+                reset_hovered.draw(SCREEN)
+                if reset_hovered.is_clicked():
+                    fade(S_WIDTH, S_HEIGHT)
+                    shapes = [Shape(5, 5, shape_pos[i][0], shape_pos[i][1],
+                                    COLORS[random.randint(0, len(COLORS)-1)], BLACK, 1) for i in range(11)]
+                    memo_board.reset()
+                    warning_board.reset()
 
 
             if submit.hovered() and pressed==None:
@@ -194,17 +214,23 @@ class GameState():
                     complete = check_win(memo_board.board)
 
                     if not complete:
+                        fade(S_WIDTH, S_HEIGHT)
                         continues()
+
                     else:
+                        fade(S_WIDTH, S_HEIGHT)
                         win()
                         if win() is True:
                             self.lvl += 1
+                            fade(S_WIDTH, S_HEIGHT)
                             self.stage_manager()
                             if self.lvl > 2:
                                 self.state = 'main_menu'
+                                fade(S_WIDTH, S_HEIGHT)
                                 self.stage_manager()
                         else:
                             self.state = 'main_menu'
+                            fade(S_WIDTH, S_HEIGHT)
                             self.stage_manager()
 
 

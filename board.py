@@ -49,6 +49,9 @@ class MemoryBoard(MainBoard):
         super().__init__(width, height, left, top, inner_color, outer_color, lines)
         self.board = [[0 for _ in range(width)] for _ in range(height)]
         self.cell_size = CELL_SIZE
+        
+    def reset(self):
+        self.board = [[0 for _ in range(self.width)] for _ in range(self.height)]
 
 
 class WarningBoard(MainBoard):
