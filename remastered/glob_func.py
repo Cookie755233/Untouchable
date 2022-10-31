@@ -1,17 +1,16 @@
 
-from pygame import image
+import pygame
 import os
 import numpy as np
 
 
-def get_image(image_name):
-    return image.load(
+def get_image(image_name: str) -> pygame.Surface:
+    return pygame.image.load(
         os.path.join('../Assets', f'{image_name}.png')
     ).convert_alpha()
 
 
-def get_shape_rotations(default_position):
-    
+def get_shape_rotations(default_position: list) -> list[list[int]]:
     # Map shape into 5x5 grid
     zero_array = np.zeros(25)
     for p in default_position:
@@ -30,22 +29,21 @@ def get_shape_rotations(default_position):
         np.rot90(np.fliplr(matrix), 3),
     ]
     
-    #
+    # Find all the rotations in by its index(x, y) from grid system
     output = []
-    
-    for i, array in enumerate(matrixs[num]):
-        for j, element in enumerate(array):
-            if element == 1:
-                rotated.append( i*len(matrix) + j )
-                
-    
-    num = 0
-    while num < 8:
+
+    # Find all the rotations in grid system(5x5)
+    for index in range(8):
         rotated = []
-        for i, array in enumerate(matrixs[num]):
+        for i, array in enumerate(matrixs[index]):
             for j, element in enumerate(array):
-                if element == 1:
-                    rotated.append(i * len(matrix) + j)
+                if element: 
+                    # Find all rotations' index by its position
+                    pos = i*len(matrix) + j # position: -> 9
+                    x, y = pos//5, pos%5    #   x, y  : -> (1,4)
+                    rotated.append((x, y))
+
         output.append(rotated)
-        num += 1
+    
     return output
+
